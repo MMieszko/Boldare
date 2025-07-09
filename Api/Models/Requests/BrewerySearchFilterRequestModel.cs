@@ -15,8 +15,4 @@ public class BrewerySearchRequest
 
     [SwaggerSchema("Longitude (required for sorting by distance)")]
     public double? Longitude { get; set; }
-
-    public GeoLocation? GeoLocation() => Latitude.HasValue && Longitude.HasValue
-        ? new GeoLocation(Latitude.Value, Longitude.Value)
-        : null;
 }

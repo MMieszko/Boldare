@@ -44,11 +44,21 @@ public class BreweryInitializationService(IServiceScopeFactory scopeFactory, IHt
         }
     }
 
-    private static Brewery MapBrewery(BreweryJsonModel jBrewery)
+    private Brewery MapBrewery(BreweryJsonModel jBrewery)
     {
-        var geoLocation = jBrewery.Longitude.HasValue && jBrewery.Latitude.HasValue
-            ? new GeoLocation(jBrewery.Latitude.Value, jBrewery.Longitude.Value)
-            : null;
+        GeoLocation? geoLocation = null;
+
+        if (jBrewery is { Latitude: not null, Longitude: not null })
+        {
+            GeoLocation.Create(jBrewery.Latitude.Value, jBrewery.Longitude.Value)
+                .Match(location =>
+                {
+                    geoLocation = location;
+                }, error =>
+                {
+                    logger.LogWarning("Failed to map Brewery`s geo location with lat {latitude} and lng {longitude}. Created fails with {errorMessage}", jBrewery.Latitude, jBrewery.Longitude, error);
+                });
+        }
 
         return new Brewery(jBrewery.Id, jBrewery.Name, geoLocation, jBrewery.City);
     }

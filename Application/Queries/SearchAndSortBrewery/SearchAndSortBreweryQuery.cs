@@ -6,5 +6,5 @@ using MediatR;
 
 namespace Application.Queries.SearchAndSortBrewery
 {
-    public record SearchAndSortBreweryQuery(string Query, SortBreweryBy? SortBy, GeoLocation? GeoLocation) : IRequest<Result<IReadOnlyCollection<Brewery>, Error>>;
+    public record SearchAndSortBreweryQuery(string Query, SortBreweryBy? SortBy, double? Latitude, double? Longitude) : IRequest<Result<IReadOnlyCollection<Brewery>, Error>>;
 }

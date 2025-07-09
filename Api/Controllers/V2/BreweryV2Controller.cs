@@ -15,7 +15,7 @@ public class BreweryV2Controller(IMediator mediator, ILogger<BreweryV2Controller
     [HttpGet("search")]
     [ProducesResponseType(typeof(BreweryModel[]), StatusCodes.Status200OK)]
     public Task<IActionResult> Get([FromQuery] BrewerySearchRequest request)
-        => Response(Send(new SearchAndSortBreweryQuery(request.Query, request.SortBy, request.GeoLocation()))
+        => Response(Send(new SearchAndSortBreweryQuery(request.Query, request.SortBy, request.Latitude, request.Longitude))
             .Map(breweries => breweries.Select(BreweryModel.FromApplication)));
 
 }

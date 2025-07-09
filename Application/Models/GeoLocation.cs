@@ -1,8 +1,27 @@
-﻿namespace Application.Models;
+﻿using Application.Utils;
+using CSharpFunctionalExtensions;
 
-public record GeoLocation(double Latitude, double Longitude)
+namespace Application.Models;
+
+public record GeoLocation
 {
     private const double EarthRadiusMeters = 6371e3;
+
+    public double Latitude { get; }
+    public double Longitude { get; }
+
+    private GeoLocation(double latitude, double longitude)
+    {
+        Latitude = latitude;
+        Longitude = longitude;
+    }
+
+    public static Result<GeoLocation, Error> Create(double latitude, double longitude) => (latitude, longitude) switch
+    {
+        ( < -90 or > 90, _) => new ValidationError(Messages.InvalidLatitude, nameof(latitude)),
+        (_, < -180 or > 180) => new ValidationError(Messages.InvalidLongitude, nameof(longitude)),
+        _ => new GeoLocation(latitude, longitude)
+    };
 
     public double DistanceTo(GeoLocation other)
     {
